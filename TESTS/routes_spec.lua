@@ -54,8 +54,8 @@ describe("the four verbs and the subcommands each offers", function()
     -- `compact` is JSON/XML only: YAML's subset has no flow style to collapse
     -- into. `ndjson` is JSON only. `to` is the one conversion each of
     -- JSON/YAML offers and XML does not (no unambiguous schema-free mapping).
-    JSON = { "compact", "filter", "keys", "lines", "ndjson", "pretty", "sort", "to" },
-    YAML = { "filter", "keys", "lines", "pretty", "sort", "to" },
+    JSON = { "compact", "filter", "infer", "keys", "lines", "ndjson", "pretty", "sort", "to" },
+    YAML = { "filter", "infer", "keys", "lines", "pretty", "sort", "to" },
     XML = { "compact", "filter", "keys", "lines", "pretty", "sort" },
     -- `:Data` is the format-agnostic subset only: reaching for compact/
     -- ndjson/to already means knowing the format.

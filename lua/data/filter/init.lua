@@ -31,7 +31,7 @@ local safe_call = require("data.util.safe_call")
 local function to_refine_items(items, rendered_lines)
   local out = {}
   for i, item in ipairs(items) do
-    out[i] = { path = item.path, line = rendered_lines[i] }
+    out[i] = { path = item.path, line = rendered_lines[i], idx = i }
   end
   return out
 end
@@ -59,8 +59,10 @@ end
 ---@param value any
 ---@param opts Data.RenderOpts
 ---@param on_done fun(out_lines: string[]|nil, err: string|nil)
+---@param fopts? { tree?: boolean } # `tree`: hand back the surviving leaves as a pretty-printed document (original Array/Map nodes) instead of `path: value` lines
 ---@return nil
-function M.run(formatter, value, opts, on_done)
+function M.run(formatter, value, opts, on_done, fopts)
+  fopts = fopts or {}
   local ok, refine = pcall(require, "pickers.refine")
   if not ok then
     on_done(nil, "requires pickers.nvim (pickers.refine) -- not installed")
@@ -124,6 +126,21 @@ function M.run(formatter, value, opts, on_done)
           return nil
         end
         local kept = h:apply(refine_items)
+        if fopts.tree then
+          local keep = {}
+          for _, it in ipairs(kept) do
+            keep[it.idx] = true
+          end
+          local pruned = require("data.filter.tree").prune(value, keep)
+          if pruned == nil then
+            return {}
+          end
+          local lines, terr = formatter.render(pruned, "pretty", opts)
+          if not lines then
+            error(terr, 0)
+          end
+          return lines
+        end
         local out = {}
         for i, it in ipairs(kept) do
           out[i] = it.line

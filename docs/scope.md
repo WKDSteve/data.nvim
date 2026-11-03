@@ -53,11 +53,13 @@
 
 ## Does not (yet)
 
-1. **Object reconstruction after `filter`.** The filter result is a flat
-   `path: value` line list, not a re-nested JSON/YAML document containing only
-   the surviving keys. Recovering array- vs. map-shaped intermediate nodes from
-   plain path strings is ambiguous without a schema — the same problem
-   [architecture.md](architecture.md) describes for XML→JSON.
+1. **Object reconstruction from path strings.** The default `filter` result is a
+   flat `path: value` line list. `filter --tree` (JSON/YAML) does give a document,
+   but by pruning the original tree rather than parsing the paths back: recovering
+   array- vs. map-shaped intermediate nodes from plain path strings is ambiguous
+   without a schema (`a.1.b` is either) — the same problem
+   [architecture.md](architecture.md) describes for XML→JSON — so XML has no
+   `--tree`.
 2. **`to xml`/`from xml`.** XML's decoded shape is a raw element tree
    (`{tag, attrs, children}`), not a plain map/array like JSON/YAML — converting
    either way would mean guessing a schema (which repeated sibling tag becomes an

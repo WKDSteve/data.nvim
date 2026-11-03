@@ -16,7 +16,8 @@ so every action and flag below also has `<Tab>` completion.
 | `ndjson [indent]` | **`:JSON` only.** Pretty-print each line as its own JSON object, not the scope as one document. A line that fails to decode is left unchanged; the total skipped count is reported once. |
 | `to yaml` | **`:JSON` only.** Convert the scope to YAML, in place. |
 | `to json` | **`:YAML` only.** Convert the scope to JSON, in place. |
-| `filter [--sep=X] [--preview]` | Interactively reduce the flattened `path`/`value` entries down to the ones matching a clause stack, replacing the scope with the survivors' `lines`-style text. **Requires [pickers.nvim](https://github.com/WKDSteve/pickers.nvim);** `--preview` additionally requires [diff.nvim](https://github.com/WKDSteve/diff.nvim). |
+| `infer` | **`:JSON`/`:YAML` only.** Derive a JSON Schema (draft-07) from the document and show it as JSON in a scratch split (`--out-reg` for a register; never in place, `--inplace` is refused). Integers apart from other numbers; `required` = keys present; objects of one array merge, a key missing from one of them is optional; mixed kinds become `anyOf`; an empty table is `array`/`object` and merges into whichever it meets. |
+| `filter [--sep=X] [--preview] [--tree]` | Interactively reduce the flattened `path`/`value` entries down to the ones matching a clause stack, replacing the scope with the survivors' `lines`-style text. **Requires [pickers.nvim](https://github.com/WKDSteve/pickers.nvim);** `--preview` additionally requires [diff.nvim](https://github.com/WKDSteve/diff.nvim). `--tree` (**JSON/YAML only**) writes the survivors as a pretty-printed document instead: the filter still runs on the flattened entries, but the result is rebuilt from the original tree, so Array and Map nodes keep their type (an array that lost elements is compacted, containers left empty are dropped). |
 
 Every action also takes the source/target flags below.
 

@@ -437,6 +437,7 @@ end
 ---@field sink Data.Sink
 ---@field prefix string
 ---@field preview boolean
+---@field tree boolean          # `--tree`: the result is a document, not `path: value` lines
 ---@field mark_id integer|nil   # extmark tracking the scope (in-place targets only)
 ---@field del_mark fun()
 
@@ -538,7 +539,7 @@ local function on_preview_answer(ctx, out, before, apply, problem)
   end
   ctx.del_mark()
 
-  deliver(ctx.sink, ctx.source, out, ctx.fmt, "filter", ctx.prefix)
+  deliver(ctx.sink, ctx.source, out, ctx.fmt, ctx.tree and "pretty" or "filter", ctx.prefix)
 end
 
 ---@internal
@@ -591,7 +592,7 @@ local function on_filtered(ctx, out, ferr)
     -- would report "No differences found" and open no window, leaving a
     -- prompt with no preview behind it.
     ctx.del_mark()
-    deliver(ctx.sink, ctx.source, out, ctx.fmt, "filter", ctx.prefix)
+    deliver(ctx.sink, ctx.source, out, ctx.fmt, ctx.tree and "pretty" or "filter", ctx.prefix)
     return
   end
 
@@ -642,12 +643,17 @@ end
 ---@param flags? Data.IOFlags
 ---@return nil
 function M.filter(fmt, cmd, opts, flags)
+  local prefix = ("%s filter: "):format(fmt:upper())
+  local tree = type(opts) == "table" and opts.tree == true
+  if tree and fmt == "xml" then
+    -- No unambiguous object model to rebuild a document from (docs/architecture.md).
+    notify.error(prefix .. "--tree is not available for XML")
+    return
+  end
   local p = prepare(fmt, cmd, opts, flags)
   if not p then
     return
   end
-
-  local prefix = ("%s filter: "):format(fmt:upper())
 
   local preview, pproblem = preview_wanted(flags or {})
   if preview == nil then
@@ -670,13 +676,50 @@ function M.filter(fmt, cmd, opts, flags)
     sink = p.sink,
     prefix = prefix,
     preview = preview,
+    tree = tree,
     mark_id = mark_id,
     del_mark = del_mark,
   }
 
   require("data.filter").run(p.formatter, p.value, p.opts, function(out, ferr)
     on_filtered(ctx, out, ferr)
-  end)
+  end, { tree = tree })
+end
+
+--- `:JSON infer` / `:YAML infer`: derive a JSON Schema (draft-07) from the resolved input and show it
+--- as JSON. Never replaces the input: the default target is a scratch split (`--split`), `--out-reg`
+--- sends it to a register, `--inplace` is refused. See `data.infer` for the rules.
+---@param fmt string              # "json"|"yaml"
+---@param cmd Lib.UserCommand.Args
+---@param opts? Data.RenderOpts
+---@param flags? Data.IOFlags
+---@return nil
+function M.infer(fmt, cmd, opts, flags)
+  local prefix = ("%s infer: "):format(fmt:upper())
+  if fmt == "xml" then
+    notify.error(prefix .. "not available for XML (no object model)")
+    return
+  end
+  flags = vim.deepcopy(flags or {})
+  if flags.inplace then
+    notify.error(prefix .. "never replaces the input -- use --split or --out-reg")
+    return
+  end
+  if not flags.out_reg then
+    flags.split = true
+  end
+  local p = prepare(fmt, cmd, opts, flags)
+  if not p then
+    return
+  end
+  local json = formats.get("json")
+  local schema = require("data.infer").schema(p.value)
+  local out, rerr = safe_call(json.render, schema, "pretty", p.opts)
+  if not out then
+    notify.error(prefix .. tostring(rerr))
+    return
+  end
+  deliver(p.sink, p.source, out, "json", "infer", prefix)
 end
 
 ---@internal

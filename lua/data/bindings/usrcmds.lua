@@ -78,6 +78,16 @@ local IO_FLAGS = {
 }
 
 ---@internal
+--- `filter --tree`: the result is a document with the surviving leaves (original Array/Map nodes),
+--- not `path: value` lines. JSON and YAML only: XML has no object model to rebuild.
+---@type Lib.UserCmd.Composer.FlagSpec
+local TREE_FLAG = {
+  name = "tree",
+  bool = true,
+  desc = "Write the kept entries as a document, not path: value lines",
+}
+
+---@internal
 --- Preview flags, offered on `filter` and nowhere else. `filter` is the one
 --- action that loses data, and the one already built to survive an async gap
 --- between resolving a scope and writing it -- see `data.preview`'s own doc
@@ -195,12 +205,24 @@ local function make_routes(fmt, include_compact, include_ndjson, to_format)
   routes[#routes + 1] = {
     path = { "filter" },
     range = true,
-    flags = with_io(SEP_FLAG, PREVIEW_FLAGS),
+    flags = with_io(SEP_FLAG, PREVIEW_FLAGS, fmt ~= "xml" and { TREE_FLAG } or {}),
     desc = "Interactively filter flattened path/value entries (requires pickers.nvim; --preview to diff before replacing)",
     run = function(ctx)
-      data.filter(fmt, ctx.raw, { sep = ctx.flags.sep }, io_flags(ctx))
+      data.filter(fmt, ctx.raw, { sep = ctx.flags.sep, tree = ctx.flags.tree }, io_flags(ctx))
     end,
   }
+
+  if fmt ~= "xml" then
+    routes[#routes + 1] = {
+      path = { "infer" },
+      range = true,
+      flags = with_io(),
+      desc = "JSON Schema (draft-07) derived from the document, shown in a scratch split (--out-reg for a register)",
+      run = function(ctx)
+        data.infer(fmt, ctx.raw, {}, io_flags(ctx))
+      end,
+    }
+  end
 
   if include_ndjson then
     routes[#routes + 1] = {

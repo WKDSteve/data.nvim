@@ -30,7 +30,8 @@ underneath; the "Flags" column names only what is specific to that action.
 | `ndjson [indent]` | yes | `indent?: INT` | — | **`:JSON` only.** Pretty-print each line as its own JSON object. |
 | `to yaml` | yes | `format: STRING` | — | **`:JSON` only.** Convert the scope to YAML. |
 | `to json` | yes | `format: STRING` | — | **`:YAML` only.** Convert the scope to JSON. |
-| `filter [--sep=X]` | yes | — | `--sep: STRING`, `--preview`, `--no-preview` | Interactively filter flattened path/value entries. **Requires pickers.nvim**; `--preview` (diff the result and confirm before replacing) additionally requires diff.nvim. |
+| `infer` | yes | — | source/target flags | **`:JSON`/`:YAML` only.** JSON Schema (draft-07) of the document in a scratch split; never in place. |
+| `filter [--sep=X]` | yes | — | `--sep: STRING`, `--preview`, `--no-preview`, `--tree` (JSON/YAML) | Interactively filter flattened path/value entries. **Requires pickers.nvim**; `--preview` (diff the result and confirm before replacing) additionally requires diff.nvim. |
 
 ### Source / target flags (every action, every verb)
 
