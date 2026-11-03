@@ -56,6 +56,16 @@ describe("data.infer.schema", function()
     assert.equals(2, #s.items.properties.xs.items.anyOf)
   end)
 
+  it("a field optional in a merged part stays optional when merged again", function()
+    local s = infer.schema({ { { a = 1 }, {} }, { { a = 1, b = 2 } } })
+    assert.is_nil(s.items.items.required)
+    assert.equals("integer", s.items.items.properties.b.type)
+  end)
+
+  it("infinity is a number, not an integer", function()
+    assert.equals("number", infer.schema(math.huge).type)
+  end)
+
   it("an empty table is either, and merges into the one that is present", function()
     assert.same({ "array", "object" }, infer.schema({}).type)
     local s = infer.schema({ { a = 1 }, {} })

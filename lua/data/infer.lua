@@ -80,6 +80,10 @@ local function merge_objects(parts)
     for name, sub in pairs(p.properties or {}) do
       props[name] = props[name] or {}
       table.insert(props[name], sub)
+    end
+    -- Required only if every part already requires it: a part that is itself a merge may have
+    -- the field as optional.
+    for _, name in ipairs(p.required or {}) do
       seen[name] = (seen[name] or 0) + 1
     end
   end
@@ -186,7 +190,10 @@ end
 infer = function(value)
   local kind = kind_of(value)
   if kind == "number" then
-    return { type = (value == math.floor(value) and value == value) and "integer" or "number" }
+    return {
+      type = (value == math.floor(value) and math.abs(value) ~= math.huge) and "integer"
+        or "number",
+    }
   elseif kind == "empty" then
     return { type = { "array", "object" } }
   elseif kind == "array" then
