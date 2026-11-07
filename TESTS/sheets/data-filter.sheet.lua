@@ -106,5 +106,22 @@ return {
     { keys = ":JSON filter --preview<CR>", note = "the preview, then Apply" },
     { expect = [[_G.text() == "a.x: keep" and not _G.problem]] },
     { wait = "#vim.api.nvim_tabpage_list_wins(0) == 1" },
+
+    { lua = [[_G.set("a: 1\nb: 2"); _G.answer("path contains", "a", false, "Apply")]] },
+    { keys = ":YAML filter --preview<CR>" },
+    { expect = [[_G.text() == "a: 1" and not _G.problem]] },
+    { wait = "#vim.api.nvim_tabpage_list_wins(0) == 1" },
+
+    {
+      lua = [[_G.set('<r a="keep" b="drop"/>'); _G.answer("path contains", "attrs.a", false, "Apply")]],
+    },
+    { keys = ":XML filter --preview<CR>" },
+    { expect = [[_G.text() == "attrs.a: keep" and not _G.problem]] },
+    { wait = "#vim.api.nvim_tabpage_list_wins(0) == 1" },
+
+    { lua = [[_G.set("a: 1\nb: 2", "yaml"); _G.answer("path contains", "b", false, "Apply")]] },
+    { keys = ":Data filter --preview<CR>" },
+    { expect = [[_G.text() == "b: 2" and not _G.problem]] },
+    { wait = "#vim.api.nvim_tabpage_list_wins(0) == 1" },
   },
 }

@@ -15,6 +15,10 @@ return {
     { keys = ":Data<CR>", note = "no action: pretty, json from the filetype" },
     { expect = "_G.text() == _G.PRETTY" },
 
+    { lua = [[_G.set('{"a":1}\n{"b":2}', "json")]] },
+    { keys = ":2Data<CR>", note = "a range: only that line" },
+    { expect = [[_G.text() == '{"a":1}\n{\n  "b": 2\n}']] },
+
     { lua = [[_G.set("b:   1", "yaml.docker-compose")]] },
     { keys = ":Data pretty<CR>", note = "yaml from the first part of a compound filetype" },
     { expect = [[_G.text() == "b: 1"]] },
