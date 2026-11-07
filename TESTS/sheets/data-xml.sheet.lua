@@ -48,8 +48,9 @@ return {
       expect = [[_G.text():find("attrs.a", 1, true) ~= nil and _G.text():find(": ", 1, true) == nil]],
     },
 
-    { lua = [[_G.set('<a/>\n<b><c/></b>')]] },
+    -- Both lines are documents compact would change: the first has to stay as typed, the second has to change.
+    { lua = [[_G.set('<a  x="1"/>\n<b  z="1" a="2"><c/></b>')]] },
     { keys = ":2XML compact<CR>", note = "a range: only that line" },
-    { expect = [[vim.api.nvim_buf_get_lines(0, 0, 1, false)[1] == "<a/>"]] },
+    { expect = [[_G.text() == '<a  x="1"/>\n<b a="2" z="1"><c/></b>']] },
   },
 }

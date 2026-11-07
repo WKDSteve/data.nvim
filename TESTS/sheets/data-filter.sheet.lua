@@ -81,7 +81,10 @@ return {
 
     { lua = [[_G.answer("path contains", "nothing", false)]] },
     { keys = ":JSON filter<CR>", note = "nothing matches: a warning, untouched" },
-    { wait = [[#_G.notes > 0]] },
+    {
+      wait = [[_G.noted("no entries matched -- nothing written")]],
+      note = "that warning, not any message",
+    },
     { expect = "_G.text() == _G.DOC" },
 
     { lua = [[_G.set("a:\n  x: keep\nb: 1"); _G.answer("path contains", "a.x", false)]] },
