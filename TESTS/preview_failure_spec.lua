@@ -145,8 +145,8 @@ describe("data.preview.confirm -- refusals, which are never a yes", function()
       local asked
       --- Test double: restored below.
       ---@diagnostic disable-next-line: duplicate-set-field
-      dialog.choose = function(question, choices, default, cb)
-        asked = { question = question, choices = choices, default = default, cb = cb }
+      dialog.choose = function(question, choices, default, cb, _, opts)
+        asked = { question = question, choices = choices, default = default, cb = cb, opts = opts }
       end
       local had_diff = package.loaded["diff"]
       package.loaded["diff"] = {
@@ -170,6 +170,7 @@ describe("data.preview.confirm -- refusals, which are never a yes", function()
       assert.same({ "Discard", "Apply" }, choices)
       assert.equals(1, default, "a stray <CR> changes nothing")
       assert.equals("replace?", question)
+      assert.is_true(asked.opts.keep_on_focus_lost, "a focus change over the preview is no discard")
       assert.same({ false }, decisions, "a dismissal is a discard")
     end
   )

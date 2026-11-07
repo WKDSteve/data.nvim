@@ -186,7 +186,7 @@ function M.confirm(opts, on_decision)
     end
   end
 
-  -- The shared dialog: Discard is first and focused (a stray <CR> changes nothing); a dismissal is a discard too.
+  -- The shared dialog: Discard is first and focused (a stray <CR> changes nothing); only Esc/q dismisses (a discard); a focus change does not.
   local asked, err = pcall(
     require("lib.nvim.ui.dialog").choose,
     opts.prompt,
@@ -195,7 +195,10 @@ function M.confirm(opts, on_decision)
     function(index)
       close_preview()
       on_decision(index == 2, nil)
-    end
+    end,
+    nil,
+    -- the dialog sits over the diff preview: focus moving between the two must not count as a discard
+    { keep_on_focus_lost = true }
   )
   if not asked then
     -- a dialog that raises must not leave the preview windows behind with nobody to decide
