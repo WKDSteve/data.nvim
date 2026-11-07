@@ -21,9 +21,20 @@ return {
   -- relaxes it to "warn" again). Every case asserts on every platform, with or without a
   -- clipboard provider.
   assertions = "error",
+  -- The worktree of `ci commit` has no sibling checkouts: the child editors of the sheets find them this way.
+  env_allow = {
+    "COLOR_MY_ASCII_NVIM_DIR",
+    "DIFF_NVIM_DIR",
+    "LIB_NVIM_DIR",
+    "PICKERS_NVIM_DIR",
+    "TESTING_NVIM_DIR",
+  },
+  -- All test sheets run in one spec file, one child editor each: the defaults of 10 s per case and 60 s per file are
+  -- reached under load (fileops, 2026-11-07).
+  timeouts = { case_ms = 30000, file_ms = 300000 },
   -- Safety nets. The suite passes every guard below cleanly in mode "error" (no file written
-  -- outside the temp dirs, no process or network started by a spec, no blocking prompt, no
-  -- unseen scheduled error, no deprecated API), so no `guard_allow` entry is needed.
+  -- outside the temp dirs, no process or network started by a spec but the child editors of the
+  -- sheets, no blocking prompt, no unseen scheduled error, no deprecated API).
   guards = {
     fs = "error",
     scheduled_error = "error",
@@ -35,6 +46,10 @@ return {
     -- filetype adds the runtime's syntax highlight groups (about 340 warnings, 42 failing cases
     -- in mode "error", none of them a leak of the plugin).
     state = "off",
+  },
+  guard_allow = {
+    -- sheets_spec.lua: every test sheet (TESTS/sheets/) runs in a child editor.
+    spawn = { "nvim" },
   },
   -- The runner counts which commands, keymaps and autocommands the specs exercise (docs/SURFACE.md of testing.nvim);
   -- `scripts/test.sh surface` compares that with surface.baseline.json (a regression gate, not a percentage).
