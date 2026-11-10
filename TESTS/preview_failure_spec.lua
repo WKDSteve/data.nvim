@@ -208,6 +208,56 @@ describe("data.preview.confirm -- refusals, which are never a yes", function()
     assert.is_false(vim.api.nvim_win_is_valid(preview_win), "the preview window is closed")
   end)
 
+  it("a dialog that replaces the question discards, closes the preview and reports once", function()
+    -- The kit is single-instance: a confirm opened over this one (another command, an AI question)
+    -- closes it. The kit then answers the replaced one as dismissed; without that the preview
+    -- windows stayed open and the caller never heard back. Real dialog, only diff.nvim is a double:
+    -- minimal_init.lua routes `dialog.choose` through `vim.ui.select` for the whole suite, so this
+    -- case loads the shared dialog afresh and puts the suite's copy back afterwards.
+    local kit_confirm = require("lib.nvim.ui.kit.confirm")
+    local suite_dialog = package.loaded["lib.nvim.ui.dialog"]
+    package.loaded["lib.nvim.ui.dialog"] = nil
+    local real_dialog = require("lib.nvim.ui.dialog")
+    package.loaded["lib.nvim.ui.dialog"] = real_dialog
+    local had_diff = package.loaded["diff"]
+    local preview_win
+    package.loaded["diff"] = {
+      run = function()
+        vim.cmd("new")
+        preview_win = vim.api.nvim_get_current_win()
+      end,
+    }
+    local decisions = {}
+    require("data.preview").confirm({
+      before = { "a" },
+      after = { "b" },
+      label = "json filter",
+      prompt = "replace?",
+    }, function(apply, problem)
+      decisions[#decisions + 1] = { apply = apply, problem = problem }
+    end)
+    package.loaded["diff"] = had_diff
+    package.loaded["lib.nvim.ui.dialog"] = suite_dialog
+    assert.is_true(kit_confirm.is_open(), "the question is shown in the kit's float")
+    local other = {}
+    require("lib.nvim.ui.kit").confirm({
+      question = "something else?",
+      on_answer = function(a)
+        other[#other + 1] = a
+      end,
+    })
+    vim.wait(500, function()
+      return #decisions > 0
+    end)
+    vim.wait(50) -- room for a second, wrong report
+    kit_confirm.close()
+    assert.equals(1, #decisions, "the caller is told exactly once")
+    assert.is_false(decisions[1].apply, "a replaced question is a discard, never an apply")
+    assert.is_nil(decisions[1].problem, "a dismissal is no failure")
+    assert.is_false(vim.api.nvim_win_is_valid(preview_win), "the preview window is closed")
+    assert.same({ false }, other, "the replacing dialog is answered on its own")
+  end)
+
   it("never reaches the prompt when it cannot render", function()
     -- Asking "apply?" with nothing on screen to look at would be the worst
     -- outcome of all: a decision the user cannot make, taken anyway.
