@@ -2,6 +2,7 @@
 -- that names none is asked about (the real chooser of lib.nvim).
 return {
   id = "data.auto",
+  feature = "data.auto",
   title = "data.nvim: :Data, pretty, sort, lines and keys detect the format, or ask",
   task = "data.nvim/testblatt-bindings-checkliste",
   steps = {

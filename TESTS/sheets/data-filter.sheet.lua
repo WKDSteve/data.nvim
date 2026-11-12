@@ -4,6 +4,7 @@
 -- choice the prompt does not offer. How the prompts look stays with whoever opens them.
 return {
   id = "data.filter",
+  feature = "data.filter",
   title = "data.nvim: :JSON, :YAML, :XML and :Data filter, --sep, --tree and --preview",
   task = "data.nvim/testblatt-bindings-checkliste",
   requires = {

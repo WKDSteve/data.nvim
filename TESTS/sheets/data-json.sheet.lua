@@ -1,6 +1,7 @@
 -- Bindings checklist, section :JSON: every action but filter (data-filter.sheet.lua), typed on a real buffer.
 return {
   id = "data.json",
+  feature = "data.json",
   title = "data.nvim: :JSON, pretty, compact, sort, lines, keys, ndjson and to, in place and on a range",
   task = "data.nvim/testblatt-bindings-checkliste",
   steps = {

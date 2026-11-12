@@ -1,6 +1,7 @@
 -- Bindings checklist, section :YAML: every action but filter (data-filter.sheet.lua), typed on a real buffer.
 return {
   id = "data.yaml",
+  feature = "data.yaml",
   title = "data.nvim: :YAML, pretty, sort, lines, keys and to, in place and on a range",
   task = "data.nvim/testblatt-bindings-checkliste",
   steps = {

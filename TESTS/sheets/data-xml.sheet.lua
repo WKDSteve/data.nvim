@@ -1,6 +1,7 @@
 -- Bindings checklist, section :XML: every action but filter (data-filter.sheet.lua), typed on a real buffer.
 return {
   id = "data.xml",
+  feature = "data.xml",
   title = "data.nvim: :XML, pretty, compact, sort, lines and keys, in place and on a range",
   task = "data.nvim/testblatt-bindings-checkliste",
   steps = {
