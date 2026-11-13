@@ -92,15 +92,9 @@ describe("data.filter.run", function()
 end)
 
 describe(":JSON/:YAML/:XML filter", function()
-  -- Optional soft dependency, same "sibling checkout" convention as the
-  -- fenced-scope tests use for color_my_ascii (see
-  -- scope_resolve_spec.lua, docs/CONTRIBUTING.md's PICKERS_DIR). Zero `it`s
-  -- registered below is the correct "skipped" outcome when pickers.nvim
-  -- isn't present in this test environment.
-  local pickers_ok = pcall(require, "pickers.refine")
-  if not pickers_ok then
-    return
-  end
+  -- pickers.nvim is a test dependency (DEPS of TESTS/minimal_init.lua, fatal when missing): a module that is
+  -- present but fails to load must be red here, never zero registered cases.
+  require("pickers.refine")
 
   local bufnr
   local orig_select, orig_input

@@ -214,9 +214,7 @@ describe("data.scope.source.resolve -- the fmt argument gates the fenced fallbac
   end)
 
   it("scopes to a matching fence when fmt is given (color_my_ascii present)", function()
-    if not pcall(require, "color_my_ascii") then
-      return
-    end
+    require("color_my_ascii") -- a test dependency: failing to load it is red, never a silent pass
     vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, { "```json", '{"a":1}', "```" })
     vim.api.nvim_win_set_cursor(0, { 2, 0 })
     local src = source.resolve(bufnr, { range = 0, line1 = 1, line2 = 1 }, "json")
@@ -229,9 +227,7 @@ describe("data.scope.source.resolve -- the fmt argument gates the fenced fallbac
     -- `resolve.lines` rejects a block whose content_end <= content_start, so
     -- an empty fence must not become a zero-line scope (which the caller
     -- would then report as "nothing to process").
-    if not pcall(require, "color_my_ascii") then
-      return
-    end
+    require("color_my_ascii") -- a test dependency: failing to load it is red, never a silent pass
     vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, { "x", "```json", "```", "y" })
     vim.api.nvim_win_set_cursor(0, { 2, 0 })
     local src, problem = source.resolve(bufnr, { range = 0, line1 = 1, line2 = 1 }, "json")

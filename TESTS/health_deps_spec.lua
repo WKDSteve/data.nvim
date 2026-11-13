@@ -15,8 +15,8 @@
 --- Capture every `vim.health.*` call made during `fn()`, restoring the real
 --- functions afterwards regardless of whether `fn()` errors. Same shape as
 --- health_spec.lua's own helper; duplicated rather than shared because
---- `PlenaryBustedDirectory` gives each spec file its own nvim process and
---- TESTS/ is not on 'runtimepath' as a module root.
+--- testing.nvim runs each spec file in its own nvim process (`isolated = "file"`
+--- in .testing.lua) and TESTS/ is not on 'runtimepath' as a module root.
 ---@param fn fun()
 ---@return {level: string, msg: string}[]
 local function capture_health(fn)

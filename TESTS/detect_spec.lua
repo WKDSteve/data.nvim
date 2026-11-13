@@ -62,12 +62,9 @@ describe("data.detect.format", function()
 end)
 
 describe("data.detect.format -- fenced-block detection (color_my_ascii)", function()
-  -- Optional soft dependency, same "sibling checkout" convention as
-  -- scope_resolve_spec.lua's fenced-block section.
-  local cma_ok = pcall(require, "color_my_ascii")
-  if not cma_ok then
-    return
-  end
+  -- color_my_ascii.nvim is a test dependency (DEPS of TESTS/minimal_init.lua, fatal when missing): a module
+  -- that is present but fails to load must be red here, never zero registered cases.
+  require("color_my_ascii")
 
   local bufnr
 

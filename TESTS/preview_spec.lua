@@ -41,13 +41,9 @@ describe("data.preview.confirm -- diff.nvim absent", function()
 end)
 
 describe("data.preview.confirm", function()
-  -- Optional soft dependency, same "sibling checkout" convention the
-  -- fenced-scope and filter specs use (see scripts/minimal_init.lua's
-  -- DIFF_DIR). Zero `it`s registered below is the correct "skipped" outcome
-  -- when diff.nvim isn't present in this test environment.
-  if not pcall(require, "diff") then
-    return
-  end
+  -- diff.nvim is a test dependency (DEPS of TESTS/minimal_init.lua, fatal when missing): a module that is
+  -- present but fails to load must be red here, never zero registered cases.
+  require("diff")
 
   local orig_select, home_win
 
@@ -290,11 +286,10 @@ describe("data.preview.confirm", function()
 end)
 
 describe(":JSON filter --preview", function()
-  -- Needs both optional dependencies: pickers.nvim to build the clause stack
-  -- at all, diff.nvim to render the preview.
-  if not (pcall(require, "pickers.refine") and pcall(require, "diff")) then
-    return
-  end
+  -- Needs both test dependencies (DEPS of TESTS/minimal_init.lua): pickers.nvim to build the clause stack at
+  -- all, diff.nvim to render the preview. One that fails to load is red here, never zero registered cases.
+  require("pickers.refine")
+  require("diff")
 
   local bufnr, home_win, orig_select, orig_input
 

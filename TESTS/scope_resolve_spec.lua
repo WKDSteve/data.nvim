@@ -57,13 +57,9 @@ describe("data.scope.resolve.lines", function()
 end)
 
 describe("data.scope.resolve.lines -- fenced-block scope (color_my_ascii)", function()
-  -- Optional soft dependency: see docs/CONTRIBUTING.md's COLOR_MY_ASCII_DIR.
-  -- Registering zero `it`s below (rather than failing) is the correct
-  -- "skipped" outcome when it isn't present in this test environment.
-  local cma_ok = pcall(require, "color_my_ascii")
-  if not cma_ok then
-    return
-  end
+  -- color_my_ascii.nvim is a test dependency (DEPS of TESTS/minimal_init.lua, fatal when missing): a module
+  -- that is present but fails to load must be red here, never zero registered cases.
+  require("color_my_ascii")
 
   local bufnr
 
