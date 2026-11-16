@@ -1,0 +1,54 @@
+testing.nvim screen v1
+size: 80x24
+cursor: 11,21
+mode: n
+--- text
+01|--- data://json filter (before, 1 line)
+02|+++ data://json filter (after, 1 line)
+03|@@ -1 +1 @@
+04|-{"a":{"x":"keep","y":"drop"},"b":1}
+05|+a.x: keep
+06|
+07|<r (before, 1 line) -> data://json filter (after, 1 line) [-] 1,1            All
+08|{"a":{"x":"keep","y":"drop"},"b":1}
+09|~
+10|~                  ╭──────────────────────────────────────────╮
+11|~                  │  JSON filter: replace 1 line(s) with 1?  │
+12|~                  │                                          │
+13|~                  │          [ Discard ]  [ Apply ]          │
+14|[Scratch]          ╰──────────────────────────────────────────╯,1            All
+15|:JSON filter --preview
+16|
+17|
+18|
+19|
+20|
+21|
+22|
+23|
+24|                                                              1,1           All
+--- attrs
+01|aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+02|aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+03|bbbbbbbbbbb
+04|cddcddddcdcdcccddddddddddddddddddddd
+05|eedeedeeed
+06|
+07|ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+08|a b  a b   eeee   b   eeee a  b  aa
+09|gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg
+10|ggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhggggggggggggggggg
+11|ggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhggggggggggggggggg
+12|ggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhggggggggggggggggg
+13|ggggggggggggggggggghhhhhhhhhhhiijiiiiiiiihhhhkhhhhhhhhhhhhhhhhhggggggggggggggggg
+14|fffffffffffffffffffhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhfffffffffffffffff
+15|llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
+16|llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
+17|llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
+18|llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
+19|llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
+20|llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
+21|llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
+22|llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
+23|llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
+24|llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
