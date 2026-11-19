@@ -35,11 +35,13 @@ return {
   {
     id = "data.source-target",
     title = "--reg reads from a register; --inplace, --split and --out-reg say where the result goes",
+    surface = { "command:JSON" },
     docs = "docs/commands.md",
   },
   {
     id = "data.fence-scope",
     title = "Without a range, a cursor inside a fenced block of the format scopes to that block (color_my_ascii.nvim)",
+    surface = { "command:JSON", "command:YAML", "command:XML" },
     docs = "docs/integrations.md",
   },
 }
