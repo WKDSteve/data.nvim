@@ -66,6 +66,7 @@ return {
       platform = { "suite", "conformance" },
       -- `testing ci land`: a check branch ci/** runs the hosted legs, main moves to a commit only once it is green there
       land = true,
+      publish = { why = "ai.nvim checks out data.nvim at ci-verified" },
     },
     steps = {
       ["workflow-in-sync"] = { preset = "workflow-in-sync" },
